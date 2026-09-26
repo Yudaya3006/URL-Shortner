@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener - Short links. Big possibilities.</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="page-container">
+        <!-- Toast Notification Container -->
+        <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+        <!-- Header -->
+        <header class="header">
+            <div class="brand">
+                <div class="brand-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                    </svg>
+                </div>
+                <div class="brand-text">
+                    <h1>URL <span>Shortener</span></h1>
+                    <p>Short links. Big possibilities.</p>
+                </div>
+            </div>
+
+            <nav class="nav">
+                <a href="#" class="nav-link active">Home</a>
+                <a href="#analytics" class="nav-link">Analytics</a>
+                <a href="#about" class="nav-link">About</a>
+                <span class="badge">Fast · Simple · Secure</span>
+            </nav>
+        </header>
+
+        <!-- Main Content Grid -->
+        <main class="main-grid">
+            <!-- Left Column: Shortener Form & Short URL Result -->
+            <div class="column left-column">
+
+                <!-- Create Short Link Form Card -->
+                <section class="card create-card">
+                    <div class="card-header">
+                        <h2>Create a short and easy-to-share link</h2>
+                        <p class="description">Paste your long URL below and get a short link in seconds.</p>
+                    </div>
+
+                    <form id="shortenForm" novalidate>
+                        <!-- Error Banner Container -->
+                        <div id="errorMessage" class="error-banner hidden" role="alert">
+                            <span class="error-icon">⚠️</span>
+                            <span class="error-text" id="errorText"></span>
+                        </div>
+
+                        <!-- Long URL Input -->
+                        <div class="form-group">
+                            <label for="url">Long URL <span class="required">*</span></label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                                    </svg>
+                                </span>
+                                <input type="url" id="url" placeholder="https://www.example.com/long-page-url" required autocomplete="off">
+                            </div>
+                        </div>
+
+                        <!-- Custom Short Name Input -->
+                        <div class="form-group">
+                            <label for="customCode">
+                                Custom short name <span class="optional">(optional)</span>
+                            </label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                    </svg>
+                                </span>
+                                <input type="text" id="customCode" placeholder="my-custom-link" autocomplete="off">
+                            </div>
+                            <p class="hint">Leave empty to generate a short code automatically.</p>
+                        </div>
+
+                        <!-- Expiration Time Dropdown -->
+                        <div class="form-group">
+                            <label for="expiration">Expiration time</label>
+                            <div class="input-wrapper select-wrapper">
+                                <span class="input-icon">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <polyline points="12 6 12 12 16 14"></polyline>
+                                    </svg>
+                                </span>
+                                <select id="expiration">
+                                    <option value="1h">1 Hour</option>
+                                    <option value="1d">1 Day</option>
+                                    <option value="7d" selected>7 Days</option>
+                                    <option value="30d">30 Days</option>
+                                    <option value="never">Never</option>
+                                </select>
+                                <span class="select-chevron">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                </span>
+                            </div>
+                            <p class="hint">Choose how long the shortened URL should remain active.</p>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-primary shorten-button" id="submitBtn">
+                            <span class="btn-text">Shorten URL</span>
+                            <span class="btn-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                    <polyline points="12 5 19 12 12 19"></polyline>
+                                </svg>
+                            </span>
+                            <span class="btn-loader hidden"></span>
+                        </button>
+                    </form>
+                </section>
+
+                <!-- Result Card (Initially Hidden) -->
+                <section id="result" class="card result-card hidden">
+                    <div class="result-header">
+                        <div class="result-title">
+                            <span class="result-icon">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                </svg>
+                            </span>
+                            <h2>Your shortened URL</h2>
+                        </div>
+                        <span class="status-badge">Active</span>
+                    </div>
+
+                    <div class="url-result">
+                        <input type="text" id="shortUrl" readonly>
+                        <div class="action-buttons">
+                            <button id="copyButton" type="button" class="btn btn-action btn-copy">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                </svg>
+                                <span>Copy</span>
+                            </button>
+                            <button id="shareButton" type="button" class="btn btn-action btn-share">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="18" cy="5" r="3"></circle>
+                                    <circle cx="6" cy="12" r="3"></circle>
+                                    <circle cx="18" cy="19" r="3"></circle>
+                                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                                    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                                </svg>
+                                <span>Share</span>
+                            </button>
+                            <button id="trackButton" type="button" class="btn btn-action btn-track">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                                </svg>
+                                <span>Track</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <p id="message" class="result-message"></p>
+                </section>
+
+            </div>
+
+            <!-- Right Column: Features & Analytics -->
+            <div class="column right-column">
+
+                <!-- Features Card -->
+                <section class="card features-card">
+                    <div class="feature-item">
+                        <div class="feature-icon">⚡</div>
+                        <h3>Fast</h3>
+                        <p>Get short links instantly powered by Base62 encoding.</p>
+                    </div>
+
+                    <div class="feature-item">
+                        <div class="feature-icon">🛡️</div>
+                        <h3>Secure</h3>
+                        <p>Safe links with automated security checks.</p>
+                    </div>
+
+                    <div class="feature-item clickable" id="trackFeature">
+                        <div class="feature-icon">📊</div>
+                        <h3>Track</h3>
+                        <p>Real-time analytics for total click counts.</p>
+                    </div>
+
+                    <div class="feature-item clickable" id="shareFeature">
+                        <div class="feature-icon">↗️</div>
+                        <h3>Share</h3>
+                        <p>Easy 1-click sharing across all platforms.</p>
+                    </div>
+                </section>
+
+                <!-- Quote Card -->
+                <div class="quote-card">
+                    <div class="quote-line"></div>
+                    <p>"A shorter link for a more connected world."</p>
+                </div>
+
+                <!-- Analytics Card (Initially Hidden) -->
+                <section id="analytics" class="card analytics-card hidden">
+                    <div class="analytics-heading">
+                        <div class="analytics-title-group">
+                            <span class="analytics-icon">📊</span>
+                            <h2>Link Analytics</h2>
+                        </div>
+                        <button id="refreshAnalyticsBtn" class="btn-icon-only" title="Refresh Analytics" type="button">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="23 4 23 10 17 10"></polyline>
+                                <polyline points="1 20 1 14 7 14"></polyline>
+                                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="analytics-content">
+                        <div class="analytics-item">
+                            <span class="analytics-label">Short Code</span>
+                            <strong id="analyticsCode">-</strong>
+                        </div>
+
+                        <div class="analytics-divider"></div>
+
+                        <div class="analytics-item">
+                            <span class="analytics-label">Total Clicks</span>
+                            <strong id="clickCount" class="click-count-highlight">0</strong>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer id="about" class="footer">
+            <p>Made with <span class="heart">♥</span> for a simpler internet</p>
+            <div class="footer-text">
+                Small links<br>Bigger reach
+            </div>
+        </footer>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+</body>
+
+</html>
